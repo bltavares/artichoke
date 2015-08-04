@@ -22,7 +22,11 @@ fn render(entry: kuchiki::iter::Select<kuchiki::iter::Elements<kuchiki::iter::De
                     let words = text.split_whitespace()
                         .collect::<Vec<_>>()
                         .connect(" ");
-                    buffer.push_str(&words)
+                    buffer.push_str(&words);
+
+                    if !words.is_empty() {
+                        buffer.push_str("\n");
+                    }
                 },
                 None => ()
             }
