@@ -16,5 +16,5 @@ fn extracts_h_articles() {
     ";
 
    let result = artichoke::parse(&example);
-   assert_eq!(result, Article { body = "This should be your article." });
+   assert_eq!(result, Some(Article { body = "This should be your article." }));
 }
