@@ -9,7 +9,7 @@ fn extracts_h_articles() {
         </head>
         <body>
           <article class='h-entry'>
-              This should be your article.
+              <p>This should be your article.</p>
           </article>
         </body>
     </html>

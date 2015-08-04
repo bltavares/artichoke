@@ -3,5 +3,9 @@ name = "artichoke"
 version = "0.1.0"
 authors = ["Bruno Tavares <bruno.exz@gmail.com>"]
 
-[dependencies]
-html5ever = "*"
+[dependencies.kuchiki]
+git = "https://github.com/SimonSapin/kuchiki.git"
+
+[[bin]]
+doc = false
+name = "artichoke"
