@@ -21,7 +21,7 @@ fn render(entry: kuchiki::iter::Select<kuchiki::iter::Elements<kuchiki::iter::De
                     let text = &*text_node.borrow();
                     let words = text.split_whitespace()
                         .collect::<Vec<_>>()
-                        .connect(" ");
+                        .join(" ");
                     buffer.push_str(&words);
 
                     if !words.is_empty() {
