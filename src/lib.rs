@@ -11,7 +11,7 @@ fn to_dom(html: &str) -> kuchiki::NodeRef {
     Html::from_string(html).parse()
 }
 
-fn render(entry: kuchiki::iter::Select<kuchiki::iter::Elements<kuchiki::iter::Descendants>>) -> Article {
+fn render(entry: kuchiki::iter::Select<kuchiki::iter::Elements<kuchiki::iter::Descendants>>) -> Option<Article> {
     let mut buffer = String::new();
 
     for elements in entry {
@@ -33,12 +33,16 @@ fn render(entry: kuchiki::iter::Select<kuchiki::iter::Elements<kuchiki::iter::De
         }
     }
 
-    Article { body: buffer }
+    if buffer.is_empty() {
+        None
+    } else {
+        Some(Article { body: buffer })
+    }
 }
 
 pub fn parse(html: &str) -> Option<Article> {
     let document = to_dom(html);
     document.select(".h-entry")
         .ok()
-        .map(render)
+        .and_then(render)
 }

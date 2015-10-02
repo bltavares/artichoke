@@ -19,3 +19,19 @@ fn extracts_h_articles() {
    let result = artichoke::parse(&example);
    assert_eq!(result, Some(artichoke::Article { body : "This should be your article.\nWith this being a new line.\n".to_owned() }));
 }
+
+#[test]
+fn extracts_nothing() {
+    let example = "
+    <html>
+        <head>
+          <title>A Title</title>
+        </head>
+        <body>
+        </body>
+    </html>
+    ";
+
+   let result = artichoke::parse(&example);
+   assert_eq!(result, None);
+}
