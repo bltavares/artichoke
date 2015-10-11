@@ -4,7 +4,10 @@ use kuchiki::Html;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Article {
-    pub body: String
+    pub body: String,
+    pub title: Option<String>,
+    pub author: Option<String>,
+    pub date: Option<String>,
 }
 
 fn to_dom(html: &str) -> kuchiki::NodeRef {
@@ -43,5 +46,11 @@ fn extract_hentry_body(document : kuchiki::NodeRef) -> Option<String> {
 
 pub fn parse(html: &str) -> Option<Article> {
     let document = to_dom(html);
-    extract_hentry_body(document).map(|x| Article { body: x })
+    extract_hentry_body(document)
+        .map(|x| Article {
+            body: x,
+            author: None,
+            date: None,
+            title: None,
+        })
 }
