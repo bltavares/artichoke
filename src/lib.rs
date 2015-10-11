@@ -10,11 +10,13 @@ pub struct Article {
     pub date: Option<String>,
 }
 
+type Node = kuchiki::NodeDataRef<kuchiki::ElementData>;
+
 fn to_dom(html: &str) -> kuchiki::NodeRef {
     Html::from_string(html).parse()
 }
 
-fn render(elements: kuchiki::NodeDataRef<kuchiki::ElementData>) -> String {
+fn render(elements: Node) -> String {
     let mut buffer = String::new();
 
     for text_node in elements.as_node().descendants() {
@@ -37,8 +39,13 @@ fn render(elements: kuchiki::NodeDataRef<kuchiki::ElementData>) -> String {
     buffer
 }
 
-fn extract_hentry_body(document : kuchiki::NodeRef) -> Option<String> {
+fn extract_hentry(document : kuchiki::NodeRef) -> Option<Node> {
     let mut entries = document.select(".h-entry, .entry, .hentry").ok().unwrap();
+    entries.next()
+}
+
+fn extract_hentry_content(entry : Node) -> Option<String> {
+    let mut entries = entry.as_node().select(".entry-content, .content").ok().unwrap();
     let first_element = entries.next();
 
     first_element.map(render)
@@ -46,7 +53,8 @@ fn extract_hentry_body(document : kuchiki::NodeRef) -> Option<String> {
 
 pub fn parse(html: &str) -> Option<Article> {
     let document = to_dom(html);
-    extract_hentry_body(document)
+    extract_hentry(document)
+        .and_then(|hentry| extract_hentry_content(hentry))
         .map(|x| Article {
             body: x,
             author: None,
