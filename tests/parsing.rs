@@ -7,18 +7,14 @@ fn extracts_h_articles() {
         <head>
           <title>A Title</title>
         </head>
-        \
-                   <body>
+        <body>
           <article class='h-entry'>
-              <div \
-                   class='entry-content'>
+              <div class='entry-content'>
                   <p>This should be your article.</p>
-                  \
                    <p>With this being a new line.</p>
               </div>
           </article>
-        \
-                   </body>
+        </body>
     </html>
     ";
 
@@ -39,8 +35,7 @@ fn extracts_nothing() {
         <head>
           <title>A Title</title>
         </head>
-        \
-                   <body>
+        <body>
         </body>
     </html>
     ";
