@@ -24,8 +24,8 @@ fn render(elements: Node) -> String {
             Some(text_node) => {
                 let text = &*text_node.borrow();
                 let words = text.split_whitespace()
-                                .collect::<Vec<_>>()
-                                .join(" ");
+                    .collect::<Vec<_>>()
+                    .join(" ");
                 buffer.push_str(&words);
 
                 if !words.is_empty() {
