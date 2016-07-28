@@ -1,6 +1,6 @@
 extern crate kuchiki;
 
-use kuchiki::Html;
+use kuchiki::traits::*;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Article {
@@ -13,7 +13,7 @@ pub struct Article {
 type Node = kuchiki::NodeDataRef<kuchiki::ElementData>;
 
 fn to_dom(html: &str) -> kuchiki::NodeRef {
-    Html::from_string(html).parse()
+    kuchiki::parse_html().one(html)
 }
 
 fn render(elements: Node) -> String {
