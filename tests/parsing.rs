@@ -1,4 +1,4 @@
-extern crate artichoke;
+use artichoke;
 
 #[test]
 fn extracts_h_articles() {
@@ -19,13 +19,17 @@ fn extracts_h_articles() {
     ";
 
     let result = artichoke::parse(&example);
-    assert_eq!(result,
-               Some(artichoke::Article {
-                   body: "This should be your article.\nWith this being a new line.\n".to_owned(),
-                   author: None,
-                   date: None,
-                   title: None,
-               }));
+    assert_eq!(
+        result,
+        Some(artichoke::Article {
+            body: "This should be your article.\n\nWith this being a new line.".to_owned(),
+            metadata: artichoke::Metadata {
+                author: None,
+                date: None,
+                title: Some("A Title".into()),
+            }
+        })
+    );
 }
 
 #[test]

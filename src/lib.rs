@@ -1,10 +1,15 @@
-extern crate kuchiki;
-
+use html5ever::serialize;
 use kuchiki::traits::*;
+use serde::Serialize;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Article {
     pub body: String,
+    pub metadata: Metadata,
+}
+
+#[derive(Debug, Eq, PartialEq, Serialize)]
+pub struct Metadata {
     pub title: Option<String>,
     pub author: Option<String>,
     pub date: Option<String>,
@@ -17,50 +22,58 @@ fn to_dom(html: &str) -> kuchiki::NodeRef {
 }
 
 fn render(elements: Node) -> String {
-    let mut buffer = String::new();
-
-    for text_node in elements.as_node().descendants() {
-        match text_node.as_text() {
-            Some(text_node) => {
-                let text = &*text_node.borrow();
-                let words = text.split_whitespace()
-                    .collect::<Vec<_>>()
-                    .join(" ");
-                buffer.push_str(&words);
-
-                if !words.is_empty() {
-                    buffer.push_str("\n");
-                }
-            }
-            None => (),
-        }
-    }
-
-    buffer
+    let mut html = vec![];
+    serialize::serialize(
+        &mut html,
+        elements.as_node(),
+        serialize::SerializeOpts {
+            scripting_enabled: false,
+            create_missing_parent: true,
+            traversal_scope: serialize::TraversalScope::IncludeNode,
+        },
+    )
+    .expect("could not encode element");
+    html2md::parse_html(&String::from_utf8_lossy(&html))
 }
 
 fn extract_hentry(document: kuchiki::NodeRef) -> Option<Node> {
-    let mut entries = document.select(".h-entry, .entry, .hentry").ok().unwrap();
+    let mut entries = document
+        .select(".h-entry, .entry, .hentry, .post")
+        .ok()
+        .unwrap();
     entries.next()
 }
 
 fn extract_hentry_content(entry: Node) -> Option<String> {
-    let mut entries = entry.as_node().select(".entry-content, .content").ok().unwrap();
+    let mut entries = entry
+        .as_node()
+        .select(".entry-content, .content, .post")
+        .ok()
+        .unwrap();
     let first_element = entries.next();
 
     first_element.map(render)
 }
 
+fn extract_metadata(dom: kuchiki::NodeRef) -> Metadata {
+    let title: Option<Node> = dom.select("title").ok().unwrap().next();
+    let title = title.map(|t| t.text_contents());
+    Metadata {
+        author: None,
+        title,
+        date: None,
+    }
+}
+
 pub fn parse(html: &str) -> Option<Article> {
     let document = to_dom(html);
-    extract_hentry(document)
-        .and_then(|hentry| extract_hentry_content(hentry))
-        .map(|x| {
-            Article {
-                body: x,
-                author: None,
-                date: None,
-                title: None,
-            }
-        })
+    let body = extract_hentry(document.clone()).and_then(extract_hentry_content)?;
+    let metadata = extract_metadata(document);
+    Some(Article { body, metadata })
+}
+
+pub fn frontmatter(article: Article) -> String {
+    let metadata =
+        toml::to_string_pretty(&article.metadata).expect("Invalid frontmatter toml data");
+    format!("+++\n{}+++\n\n{}", metadata, article.body)
 }

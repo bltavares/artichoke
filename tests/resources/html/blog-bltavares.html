@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Bruno Lara Tavares" />
+<link href="//fonts.googleapis.com/css?family=Open+Sans:600,800" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="alternate" type="application/rss+xml" title="Bruno Lara Tavares" href="https://blog.bltavares.com/atom.xml" />
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/assets/css/all.css?1558476640922378115">
+<meta name="theme-color" content="#40826d" />
+<link rel="authorization_endpoint" href="https://indieauth.com/auth">
+<link rel="token_endpoint" href="https://tokens.indieauth.com/token">
+<link rel="micropub" href="https://indie-blog-bltavares.herokuapp.com/micropub/main">
+
+<title>Cluster em casa – Sistema operacional | Bruno Lara Tavares - Blog</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Cluster em casa – Sistema operacional" />
+<meta name="author" content="Bruno Lara Tavares" />
+<meta property="og:locale" content="pt_BR" />
+<meta name="description" content="Vamos investigar quais são as opções de sistemas operacionais para montarmos o nosso cluster em casa." />
+<meta property="og:description" content="Vamos investigar quais são as opções de sistemas operacionais para montarmos o nosso cluster em casa." />
+<link rel="canonical" href="https://blog.bltavares.com/2019/05/21/cluster_em_casa_sistemas_operacionais/" />
+<meta property="og:url" content="https://blog.bltavares.com/2019/05/21/cluster_em_casa_sistemas_operacionais/" />
+<meta property="og:site_name" content="Bruno Lara Tavares - Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-21T00:00:00-03:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@bltavares" />
+<meta name="twitter:creator" content="@bltavares" />
+<meta property="article:publisher" content="bltavares" />
+<meta name="msvalidate.01" content="0411A18071388E4453DC05E26EBB943F" />
+<meta name="yandex-verification" content="c256e221e48f6bd4" />
+<script type="application/ld+json">
+{"datePublished":"2019-05-21T00:00:00-03:00","dateModified":"2019-05-21T00:00:00-03:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.bltavares.com/2019/05/21/cluster_em_casa_sistemas_operacionais/"},"url":"https://blog.bltavares.com/2019/05/21/cluster_em_casa_sistemas_operacionais/","author":{"@type":"Person","name":"Bruno Lara Tavares"},"description":"Vamos investigar quais são as opções de sistemas operacionais para montarmos o nosso cluster em casa.","headline":"Cluster em casa – Sistema operacional","@context":"http://schema.org"}</script>
+
+<link rel="pingback" href="https://webmention.io/blog.bltavares.com/xmlrpc" />
+<link rel="webmention" href="https://webmention.io/blog.bltavares.com/webmention" />
+</head>
+<body>
+<div class="container">
+<header class="header">
+<nav itemscope itemtype="https://schema.org/Person" class="h-card">
+<meta itemprop="url" content="https://blog.bltavares.com">
+<h1>Hi, I'm
+<address style="display:inline" class="author vcard">
+<a href="https://blog.bltavares.com" class="url u-url" rel="me"><span class="fn p-name" itemprop="name">Bruno Lara Tavares</span></a></h1>
+</address>
+<div id="social">
+<span id="stalker">
+<a itemprop="sameAs" class="u-url" rel="me" title="bltavares on Github" href="https://github.com/bltavares">
+<i class="fa fa-github-square"></i>
+</a>
+<a itemprop="sameAs" class="u-url" rel="me" title="bltavares on Twitter" href="https://twitter.com/bltavares">
+<i class="fa fa-twitter-square"></i>
+</a>
+<a itemprop="sameAs" class="u-url" rel="me" title="Linkedin Profile" href="https://www.linkedin.com/in/bltavares/">
+<i class="fa fa-linkedin-square"></i>
+</a>
+<a title="RSS feed" id="rss" href="/atom.xml">
+<i class="fa fa-rss-square"></i>
+</a>
+</span>
+</div>
+</nav>
+</header>
+<main class="content">
+<main aria-label="Main content" itemscope itemtype="https://schema.org/Blog">
+<article class="h-entry hentry" itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
+<p class="meta">
+<a href="/" aria-label="Go to homepage">
+<i class="home fa fa-home"></i>
+</a>
+<br />
+<time class="dt-published published" datetime="2019-05-21 00:00:00 -0300" itemprop="datePublished dateModified">
+May 21, 2019
+</time>
+-
+<span itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+<a href="https://blog.bltavares.com" class="p-author h-card author" rel="author" title="Author: Bruno Lara Tavares" itemprop="url name">
+Bruno Lara Tavares
+</a>
+</span>
+<span>[homelab, cluster, raspberry]</span>
+</p>
+<h1 class="title p-name entry-title" itemprop="name headline">
+<a href="/2019/05/21/cluster_em_casa_sistemas_operacionais/" class="u-url bookmark" rel="bookmark" itemprop="mainEntityOfPage url">
+Cluster em casa – Sistema operacional
+</a>
+</h1>
+<div id="post" class="e-content entry-content" itemprop="articleBody">
+<p>Depois de <a href="https://blog.bltavares.com/2019/05/12/cluster_em_casa_hardware/">escolhido o hardware</a> para montar o cluster em casa, precisamos dar o primeiro passo para ligá-los, ou seja, precisamos de um sistema operacional.</p>
+<h2 id="sistemas-operacionais-para-sbcs">Sistemas operacionais para SBCs</h2>
+<p>O ideal seria começar com o hardware mais limitado: os Raspberry Pis ARMv6. A grande vantagem de ter escolhido Raspberry Pi ao invés de outros <a href="https://en.wikipedia.org/wiki/Single-board_computer">Single Board Computers</a> (SBC) está na quantidade de sistemas e suporte oferecido para o hardware.</p>
+<p>Precisamos confirmar o suporte a ARMv6 de sistemas operacionais como RancherOS e CoreOS, voltados para criação de clusters, dado que o ARMv6 é uma arquitetura mais antiga e mais lenta, voltado para IoT e hobbistas.</p>
+<p>Existem provedores de servidores ARM no mercado, como a <a href="https://www.scaleway.com/en/">Scaleway</a> e <a href="https://www.packet.com/">Packet</a>, que oferecem computadores ARMv8 64 e isso vem aumentando a demanda de suporte a ARMs, mas ainda é comum não encontrar suporte em sistemas operacionais voltados a contêineres para as versões mais antigas da arquitetura.</p>
+<h3 id="coreos">CoreOS</h3>
+<p><a href="https://coreos.com/">CoreOS</a> possui alguns componentes que suportam ARM no seu canal alpha/beta de distribuição, mas todos estão bem longes da estabilidade.</p>
+<p>O <a href="https://coreos.com/etcd/docs/latest/op-guide/supported-platform.html">suporte de plataformas documentado</a> aponta que ARM64 é experimental e ARM é instável.</p>
+<h3 id="rancher-os">Rancher OS</h3>
+<p>Rancher OS possui <a href="https://rancher.com/docs/os/v1.2/en/running-rancheros/server/raspberry-pi/">suporte oficial ao Raspberry Pi</a> desde a versão v0.5.0, mas menciona ter sido testado apenas em Raspberry Pi 3.</p>
+<p>Uma das vantagens ofertadas pelo Rancher OS pode ser também um dos nossos problemas. O sistema operacional possui todo os serviços base rodando como contêineres Docker. Como eu precisaria configurar o ClusterHat em um dos PIs, essa característica do OS teria uma grande chance de se tornar um grande problema.</p>
+<p>A instalação da placa requer acesso os plugues GPIO, e mesmo sabendo que seria possível repassar o acesso para dentro de um container usando volumes, parece ser uma complexidade desnecessária. Nós já temos complexidade o suficiente no nosso setup, e eu preferiria evitar mais uma delas durante a escolha do OS.</p>
+<h3 id="k3os">k3OS</h3>
+<p>A equipe da Rancher Inc. anunciou recentemente o <a href="https://k3os.io/">k3OS</a>, logo depois de anunciar o <a href="https://k3s.io/">k3s</a>. Eu já havia montado o cluster quando o anúncio foi feito, mas vamos analisar ainda assim.</p>
+<p>A proposta do k3s é reduzir a complexidade de componentes de um nó rodando kubernetes, e o k3OS oferece um sistema operacional que se configura automaticamente e se associa ao cluster.</p>
+<p>A promessa é de rodar um nó de kubernetes usando apenas 512mb de memória, mas alguns dos SBCs do nosso cluster são os pequenos Raspberry Pis Zero W, que possuem apenas os 512mb de memória requeridos.</p>
+<p>Isso sozinho já torna improvável escolher o k3s, dado que toda a memória iria para manter o sistema do kubernetes. O segundo motivo para evitar esse sistema no nosso caso é o uso de kubernetes, que <a href="https://github.com/kubernetes/kubeadm/issues/253#issuecomment-296738890">não suporta ARMv6 desde 2017</a>.</p>
+<p>A proposta de um sistema que configura sozinho um novo nó para o cluster, e usa poucos recursos, é extremamente interessante para pequenos computadores, mas ainda não para computadores tão pequenos quanto os que escolhi.</p>
+<p>Vou acompanhar <a href="https://github.com/rancher/k3os/issues/65">o issue pendido suporte a ARM</a> para uma possível mudança de OS no futuro.</p>
+<h3 id="balenaos">BalenaOS</h3>
+<p>Anteriormente chamada <a href="https://www.balena.io/blog/resin-io-changes-name-to-balena-releases-open-source-edition/">Resin.io</a>, o <a href="https://www.balena.io/os/">BalenaOS</a> oferece uma maneira simples de distribuir e executar software em diversos SBCs.</p>
+<p>O sistema operacional se integra com o sistema de build e empacotamento chamado <a href="https://www.balena.io/cloud/">BalenaCloud</a>, que permite que você escreva seu software, associe seu SBC, gere uma imagem Linux já preparada com um sistema de distribuição de pacotes e configurações, tudo configurável por um dashboard.
+O serviço é bem completo, oferecendo processo de build do código para a arquitetura do SBC, VPN para garantir a acessibilidade independentemente de onde o computador estiver, sistema de atualização e configuração.</p>
+<p>A empresa possui uma engine para containers otimizada para rodar em SBCs chamado <a href="https://www.balena.io/engine">BalenaEngine</a>, otimizada para evitar o uso do disco, dado que na maior parte das vezes estamos rodando o sistema a partir de cartões microSD, que possuem uma taxa de desgaste maior que SSDs e HDDs.</p>
+<p>Como o objetivo do projeto é entender quais os componentes necessários para criar o nosso cluster p2p, preferi seguir buscando outros sistemas operacionais. A oferta é bem interessante, principalmente se eu estivesse procurando apenas uma maneira de executar programas que eu mesmo escrevi em vários SBCs.</p>
+<p>Apesar de não usar o sistema, recomendo ver a <a href="https://www.youtube.com/watch?v=cvah8oTNir4">apresenta sobre as otimizações</a> incluídas na engine, que poderia ser utilizada sem todos os outros componentes. Ainda está na minha lista experimentar mudar a engine que roda nos Raspberry Pies e testar quão fácil seria trocar apenas um dos componentes do sistema.</p>
+<h3 id="armbian-e-raspbian">armbian e raspbian</h3>
+<p>Os dois sistemas são ótimos pontos de partida para construir o que quisermos, com ambos baseados no Debian. O <a href="https://www.armbian.com/">armbian</a> oferece suporte para várias SBCs, menos o Raspberry Pi, enquanto o <a href="https://raspbian.org/">raspbian</a> é focado apenas em Raspberry Pis.<br />
+O criador do ClusterHat oferece imagens pré-configuradas para a inicialização da placa e compartilhamento da interface de rede através do conector GPIO e USB, baseadas no <a href="https://raspbian.org/">raspbian</a>.</p>
+<p>A grande vantagem de começar com um Debian como base nesse caso é permitir a escolha aberta do nosso orquestrado. A pesquisa do orquestrador fica para o próximo post.
+Faltaria apenas configurar Docker para cada um dos computadores usando os scripts de instalação para Debian.</p>
+<h3 id="hypriotos">HypriotOS</h3>
+<p><a href="https://github.com/hypriot/image-builder-rpi/releases">HypriotOS</a> é outro sistema operacional focado para SBCs, principalmente para o Raspberry Pi, que tem como objetivo entregar um sistema já pronto para utilizar Docker. Não só apenas o sistema já possui Docker Engine instalado, mas também possui <a href="https://cloud-init.io/">cloud-init</a> para configuração inicial, similar a servidores na nuvem.</p>
+<p>Essa proposta encaixa muito bem com o que estava procurando:</p>
+<ul>
+<li>Instalação fácil, com otimizações para rodar Docker já configuradas</li>
+<li><code class="highlighter-rouge">cloud-init</code> permite que eu declare o setup em um arquivo para ser executado durante o primeiro boot, configurando rede e hostname, primeiros pacotes necessários, chaves de acesso e serviços iniciais, sem precisar de conectar um teclado e monitor, ou investigar os IPs de cada placa na rede.</li>
+<li>Baseado em Debian, que permitirá trazer as configurações necessárias para instalar o ClusterHat no sistema sem muito mais esforço que em um sistema onde tudo vive dentro do Docker, e escolher o orquestrador.</li>
+</ul>
+<h2 id="sistemas-para-os-x86">Sistemas para os x86</h2>
+<p>Seguindo com a pesquisa, agora precisamos escolher o sistema operacional para os x86. Para manter uniformidade nos sistemas operacionais, escolhi algo baseado em Debian.</p>
+<p>Começando com o processo de boot, me lembrei de diversos posts e links que apareceram na minha linha do tempo, e me pareceu uma boa oportunidade para investigá-los.</p>
+<ul>
+<li>https://twitter.com/jessfraz/status/1019745690887557127</li>
+<li>https://twitter.com/majorhayden/status/934957592228585472</li>
+<li>https://blog.jessfraz.com/post/home-lab-is-the-dopest-lab/</li>
+<li>https://carolynvanslyck.com/blog/2017/10/my-little-cluster/</li>
+<li>https://twitter.com/netbootxyz</li>
+<li>https://blog.sophaskins.net/blog/setting-up-a-home-hypervisor/</li>
+<li>https://github.com/bradfitz/homelab</li>
+</ul>
+<h3 id="pxe-boot--iniciando-o-sistema-pela-rede">PXE Boot – iniciando o sistema pela rede</h3>
+<p>Duas ferramentas me chamaram a atenção: <a href="https://github.com/danderson/netboot/tree/master/pixiecore">pixiecore</a> e <a href="https://netboot.xyz">netboot.xyz</a>. Ambas permitem que um computador faça bootstrap a partir de uma imagem na rede.
+<a href="https://github.com/danderson/netboot/tree/master/pixiecore">pixiecore</a> permite configurar um servidor com uma imagem local, enquanto o <a href="https://netboot.xyz">netboot.xyz</a> já traz uma lista pré-configurada para carregar um sistema e roda na internet.</p>
+<p>Várias das placas mães com UEFI já possuem o a opção para carregar uma imagem pela rede, utilizando <a href="https://en.wikipedia.org/wiki/Preboot_Execution_Environment">PXE</a>, mas cada firmware pode ter problemas na implementação. Para nossa sorte, existe uma imagem mais moderna e com suporte a IPv6 e HTTPS, chamada <a href="https://ipxe.org/">iPXE</a>, que pode evitar os problemas do PXE embutido na placa mãe.</p>
+<p>O <a href="https://netboot.xyz">netboot.xyz</a> nos oferece uma imagem baseada em <a href="https://ipxe.org/">iPXE</a>, já configurada para acessar uma lista de servidores pela internet. O processo de escolha de um novo sistema foi bem fácil e requer apenas gravar um ISO ou pendrive para a inicialização.</p>
+<p>Pude escolher entre CoreOS, RancherOS e Debian apenas utilizando um menu durante o boot.</p>
+<h3 id="mais-nós-no-cluster--hipervisores-e-vms">Mais nós no cluster – Hipervisores e VMs</h3>
+<p>Depois do primeiro sistema x86 pronto, podemos testar a viabilidade de adotar o <code class="highlighter-rouge">pixiecore</code> para utilizar imagens locais. Podemos usar o <a href="https://www.linux-kvm.org/page/Main_Page">KVM</a> para virtualizar pequenos servidores e e aumentar a quantidade de nós que temos no nosso cluster.</p>
+<p>Alguns colegas já haviam recomendado usar o <a href="https://www.unraid.net/">UnraidOS</a>, e no trabalho eu já havia utilizado vSphere algumas vezes. Esss são escolhas comuns na <a href="https://www.reddit.com/r/homelab/">comunidade de homelab</a>, mas várias outras recomendações me levaram ao <a href="https://www.proxmox.com/en/proxmox-ve/features">Proxmox VE</a>.</p>
+<p><a href="https://www.proxmox.com/en/proxmox-ve/features">Proxmox VE</a> é construído em cima do Debian, e pode ser instalado por cima de uma instalação básica de Debian. O sistema oferece uma interface web para gerenciar VMs KVM e contêineres LXC. Alem disso, dado que estamos rodando um Debian, também posso utilizar Docker diretamente no hipervisor, apesar de não recomendado.</p>
+<p>Optei por instalar do zero, ao invés de migrar de um sistema com Debian já instalado. Depois de configurar o IP fixo e responder algumas perguntas durante a instalação guiada, pude subir uma VM usando a interface web.</p>
+<p>Agora podemos testar um boot com <a href="https://github.com/danderson/netboot/tree/master/pixiecore">pixiecore</a>. O processo de subir o servidor de boot requer apenas inicializar um container Docker, compartilhando o namespace de rede para que as VMs recebam pacotes de rede por broadcast. . Os passos estão documentados no README do projeto.
+Depois de brigar um pouco com as opções de boot da VM, testando UEFI e BIOS, consegui iniciar VMs tanto com CoreOS quanto RancherOS.</p>
+<p>As duas imagens suportam configurações durante o boot, similar ao <a href="https://cloud-init.io/">cloud-init</a>, e é possível prover um arquivo de configuração para ser enviado como user-data junto da imagem do OS.
+Infelizmente essa estratégia não funciona bem para criar VMs Debian. As imagens distribuídas oficialmente não têm <a href="https://cloud-init.io/">cloud-init</a> configuradas, diferente do que acontece nas imagens Debian utilizadas em nuvens.</p>
+<p>O HypriotOS nos permite utilizar <a href="https://cloud-init.io/">cloud-init</a>, e seria muito legal poder reaproveitar isso para todos os nós Debian, mas criar uma imagem Debian com tudo configurado para boot pela rede ficou pra depois.</p>
+<h2 id="escolhas">Escolhas</h2>
+<p>No primeiro momento cheguei a utilizar o sistema pré-configurado com o ClusterHat, para aprender melhor como funciona o processo de boot, inicialização e configuração da placa adicional.</p>
+<p>Depois de estudar <a href="https://github.com/burtyb/clusterhat-image">o script de geração da imagem</a> base, criei um <a href="https://cloud-init.io/">cloud-init</a> para o HypriotOS. Agora tenho um sistema otimizado para Docker rodando no Raspberry Pi, com o setup inicial descritivo.</p>
+<p>No laptop reformado, escolhi utilizar o <a href="https://www.proxmox.com/en/proxmox-ve/features">Proxmox VE</a> para ganhar acesso a VMs, e configurei Docker mesmo que contraindicado.</p>
+<p>Ainda temos uma quantidade em que é viável escolher Debian sem boot pela rede ou <a href="https://cloud-init.io/">cloud-init</a>, e escolhi utilizar o <a href="https://netboot.xyz">netboot.xyz</a> por enquanto.</p>
+<p>Toda a minifrota de computadores roda Debian. As configurações estão <a href="https://github.com/bltavares/homelab">documentadas no GitHub</a>, caso alguém tenha interesse.
+Com os computadores ligados e funcionando, o próximo post agora é sobre configuração e conexão.</p>
+</div>
+<aside id="related">
+<h3>Related Posts</h3>
+<ul class="posts h-feed hfeed">
+<li class="h-entry hentry" itemscope="" itemtype="http://schema.org/BlogPosting">
+<meta itemprop="author" content="Bruno Lara Tavares" />
+<span>
+<time class="dt-published published" datetime="2019-05-12 00:00:00 -0300" itemprop="datePublished dateModified">
+12 May 2019
+</time>
+&raquo;
+</span>
+<a href="/2019/05/12/cluster_em_casa_hardware/" hreflang="pt-br" class="u-url bookmark" rel="bookmark" itemprop="url mainEntityOfPage">
+<b class="p-name entry-title" itemprop="name headline">
+Cluster em casa - Hardware
+</b>
+</a>
+</li>
+<li class="h-entry hentry" itemscope="" itemtype="http://schema.org/BlogPosting">
+<meta itemprop="author" content="Bruno Lara Tavares" />
+<span>
+<time class="dt-published published" datetime="2017-06-13 00:00:00 -0300" itemprop="datePublished dateModified">
+13 Jun 2017
+</time>
+&raquo;
+</span>
+<a href="/2017/06/13/updates_sobre_o_ecossistema_do_rust/" hreflang="pt-br" class="u-url bookmark" rel="bookmark" itemprop="url mainEntityOfPage">
+<b class="p-name entry-title" itemprop="name headline">
+Updates sobre o ecossistema de Rust (Maio/Junho 2017)
+</b>
+</a>
+</li>
+<li class="h-entry hentry" itemscope="" itemtype="http://schema.org/BlogPosting">
+<meta itemprop="author" content="Bruno Lara Tavares" />
+<span>
+<time class="dt-published published" datetime="2017-01-18 00:00:00 -0200" itemprop="datePublished dateModified">
+18 Jan 2017
+</time>
+&raquo;
+</span>
+<a href="/2017/01/18/expressando_o_dominio_atraves_do_sistema_de_tipos/" hreflang="pt-br" class="u-url bookmark" rel="bookmark" itemprop="url mainEntityOfPage">
+<b class="p-name entry-title" itemprop="name headline">
+Expressando o domínio através do sistema de tipos
+</b>
+</a>
+</li>
+</ul>
+</aside>
+</article>
+</main>
+</main>
+<footer class="footer">
+<div class="disclaimer">
+<p>
+<a href="https://blog.bltavares.com"> <i class="fa fa-home"></i> Home</a> -
+Bruno Lara Tavares © 2019
+-
+The postings on this site are my own and don't necessarily represent my
+employer’s positions, strategies or opinions.
+</p>
+</div>
+</footer>
+</div>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-23371092-1', 'auto', {'allowLinker': true});
+  ga('require', 'linker');
+
+  ga('linker:autoLink', ['bltavares.com', 'bltavares.com.br']);
+  ga('send', 'pageview');
+</script>
+<script type="text/javascript" src="/assets/service-worker-installation.js" defer></script>
+</body>
+</html>

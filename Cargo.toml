@@ -1,11 +1,20 @@
 [package]
-name = "artichoke"
-version = "0.1.0"
-authors = ["Bruno Tavares <bruno.exz@gmail.com>"]
+name = 'artichoke'
+version = '0.1.0'
+authors = ['Bruno Tavares <connect+github@bltavares.com>']
+edition = '2018'
 
-[dependencies.kuchiki]
-git = "https://github.com/SimonSapin/kuchiki.git"
+[dependencies]
+kuchiki = '0.8.1'
+html2md = '0.2.10'
+html5ever = '0.25.1'
+toml = '0.5.6'
+clap = '3.0.0-beta.1'
+ureq = '1.4.0'
 
-[[bin]]
-doc = false
-name = "artichoke"
+[dependencies.serde]
+version = '1.0'
+features = ['derive']
+
+[dev-dependencies]
+test-generator = '0.3.0'
