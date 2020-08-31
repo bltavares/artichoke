@@ -4,6 +4,9 @@ version = '0.1.0'
 authors = ['Bruno Tavares <connect+github@bltavares.com>']
 edition = '2018'
 
+[workspace]
+members = ['ffi']
+
 [dependencies]
 kuchiki = '0.8.1'
 html2md = '0.2.10'

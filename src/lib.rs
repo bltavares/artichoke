@@ -1,6 +1,7 @@
 use html5ever::serialize;
 use kuchiki::traits::*;
 use serde::Serialize;
+use std::fs;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Article {
@@ -76,4 +77,15 @@ pub fn frontmatter(article: Article) -> String {
     let metadata =
         toml::to_string_pretty(&article.metadata).expect("Invalid frontmatter toml data");
     format!("+++\n{}+++\n\n{}", metadata, article.body)
+}
+
+pub fn fetch_info(path: &str) -> String {
+    if path.starts_with("http://") || path.starts_with("https://") {
+        ureq::get(path)
+            .call()
+            .into_string()
+            .expect("could not read http body")
+    } else {
+        fs::read_to_string(path).expect("could not read the local file")
+    }
 }
