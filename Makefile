@@ -68,6 +68,7 @@ endif
 
 FFI_PROJECT := artichoke_ffi
 APP_DIR := app
+
 ANDROID_TARGETS := aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
 ANDROID_LIBS := $(foreach target,$(ANDROID_TARGETS),target/$(target)/$(MODE)/lib$(FFI_PROJECT).so)
 
@@ -87,10 +88,24 @@ android: $(ANDROID_LIBS)
 	-cp target/i686-linux-android/$(MODE)/lib$(FFI_PROJECT).so \
 		$(APP_DIR)/android/app/src/main/jniLibs/x86/lib$(FFI_PROJECT).so
 
+.PHONY: android
+
 target/universal/$(MODE)/lib$(FFI_PROJECT).a: $(RUST_FILES)
 	cargo lipo $(RUST_FLAGS)
 
 ios: target/universal/$(MODE)/lib$(FFI_PROJECT).a
 	-cp $< $(APP_DIR)/ios/libs/lib$(FFI_PROJECT).a
 
-.PHONY: android ios
+.PHONY: ios
+
+target/%/$(MODE)/$(FFI_PROJECT).dll: $(RUST_FILES)
+	cross build -p $(FFI_PROJECT) --target $* $(RUST_FLAGS)
+
+WINDOWS_TARGETS := x86_64-pc-windows-msvc
+WINDOWS_LIBS := $(foreach target,$(WINDOWS_TARGETS),target/$(target)/$(MODE)/$(FFI_PROJECT).dll)
+
+windows: $(WINDOWS_LIBS)
+	-cp target/x86_64-pc-windows-msvc/$(MODE)/$(FFI_PROJECT).dll \
+		$(APP_DIR)/windows/lib/$(FFI_PROJECT).dll
+
+.PHONY: windows
