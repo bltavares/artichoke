@@ -46,6 +46,26 @@ class FindUrl extends StatefulWidget {
 
 class _FindUrlState extends State<FindUrl> {
   String path;
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Clipboard.getData("text/plain").then((data) {
+      if (data.text.startsWith("http://") || data.text.startsWith("https://")) {
+        controller.text = data.text;
+        setState(() {
+          path = data.text;
+        });
+      }
+    });
+  }
 
   void submit(String input) {
     final data = input ?? this.path;
@@ -70,8 +90,17 @@ class _FindUrlState extends State<FindUrl> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              autofocus: true,
+              controller: controller,
               onSubmitted: submit,
+              decoration: InputDecoration(
+                hintText: "website",
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    controller.clear();
+                  },
+                  icon: Icon(Icons.clear),
+                ),
+              ),
               onChanged: (input) {
                 setState(() {
                   this.path = input;

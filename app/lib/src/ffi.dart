@@ -4,13 +4,15 @@ import 'package:path/path.dart' as path;
 import 'package:ffi/ffi.dart';
 
 ffi.DynamicLibrary _loadLib() {
+  if (Platform.isIOS) return ffi.DynamicLibrary.process();
+  if (Platform.isAndroid) return ffi.DynamicLibrary.open("libartichoke_ffi.so");
+
   final processLocation = path.split(Platform.resolvedExecutable);
   processLocation.removeLast();
 
-  if (Platform.isIOS) return ffi.DynamicLibrary.process();
   if (Platform.isLinux) processLocation.add("libartichoke_ffi.so");
-  if (Platform.isMacOS) processLocation.add('libartichoke_ffi.dylib');
-  if (Platform.isWindows) processLocation.add('artichoke_ffi.dll');
+  if (Platform.isMacOS) processLocation.add("libartichoke_ffi.dylib");
+  if (Platform.isWindows) processLocation.add("artichoke_ffi.dll");
   return ffi.DynamicLibrary.open(path.joinAll(processLocation));
 }
 
