@@ -58,6 +58,7 @@ class _FindUrlState extends State<FindUrl> {
   void initState() {
     super.initState();
     Clipboard.getData("text/plain").then((data) {
+      if (data == null) return;
       if (data.text.startsWith("http://") || data.text.startsWith("https://")) {
         controller.text = data.text;
         setState(() {
