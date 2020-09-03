@@ -37,9 +37,12 @@ class _MarkdownViewState extends State<MarkdownView> {
   }
 
   void downloadContent() async {
-    final result = await compute(download, this.widget.path);
+    final result = await compute(
+      (path) => Article.download(path),
+      this.widget.path,
+    );
     setState(() {
-      this.content = result;
+      this.content = result.content;
     });
   }
 

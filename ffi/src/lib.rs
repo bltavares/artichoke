@@ -31,3 +31,11 @@ pub extern "C" fn artichoke_parse(s: *const libc::c_char) -> Option<ptr::NonNull
         .map(ffi::CString::into_raw)
         .and_then(ptr::NonNull::new)
 }
+
+#[no_mangle]
+pub extern "C" fn artichoke_free_string(str: *mut libc::c_char) {
+    if str.is_null() {
+        return;
+    }
+    drop(unsafe { ffi::CString::from_raw(str) });
+}

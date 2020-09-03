@@ -1,7 +1,9 @@
 import 'dart:ffi' as ffi; // For FFI
 import 'dart:io'; // For Platform.isX
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:ffi/ffi.dart';
+import 'package:toml/decoder.dart';
 
 ffi.DynamicLibrary _loadLib() {
   if (Platform.isIOS) return ffi.DynamicLibrary.process();
@@ -19,17 +21,53 @@ ffi.DynamicLibrary _loadLib() {
 final _artichokeLib = _loadLib();
 
 typedef _ArtichokeDownload = ffi.Pointer<Utf8> Function(ffi.Pointer<Utf8>);
-final _ArtichokeDownload _artichokeDonwload = _artichokeLib
-    .lookup<ffi.NativeFunction<_ArtichokeDownload>>(
-      'artichoke_download_and_parse',
-    )
-    .asFunction();
+final _artichokeDonwload =
+    _artichokeLib.lookupFunction<_ArtichokeDownload, _ArtichokeDownload>(
+        'artichoke_download_and_parse');
 
-String download(String path) {
+final _artichokeFreeString = _artichokeLib.lookupFunction<
+    ffi.Void Function(ffi.Pointer<Utf8>),
+    void Function(ffi.Pointer<Utf8>)>('artichoke_free_string');
+
+String _ffiDownload(String path) {
   final donwloadPath = Utf8.toUtf8(path);
   final content = _artichokeDonwload(donwloadPath);
   if (content == ffi.nullptr) {
     return null;
   }
-  return Utf8.fromUtf8(content);
+  final r = Utf8.fromUtf8(content);
+  _artichokeFreeString(content);
+  return r;
+}
+
+class Article {
+  final Map<String, dynamic> metadata;
+  final String content;
+
+  Article({this.metadata, @required this.content});
+
+  factory Article.download(String path) {
+    final content = _ffiDownload(path);
+    return Article.parse(content);
+  }
+
+  factory Article.parse(String content) {
+    if (content == null) {
+      return null;
+    }
+
+    if (!content.startsWith('+++')) {
+      return Article(content: content, metadata: null);
+    }
+
+    final closeIndex = content.indexOf('\n+++');
+    final metadata = content.substring(3, closeIndex);
+    final parser = new TomlParser();
+    final parsed = parser.parse(metadata).value;
+
+    return Article(
+      metadata: parsed,
+      content: content.substring(closeIndex + 4),
+    );
+  }
 }
