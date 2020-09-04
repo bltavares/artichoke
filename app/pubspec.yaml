@@ -28,6 +28,9 @@ dependencies:
   flutter_markdown: ^0.4.3
   markdown: ^2.1.8
   toml: ^0.6.0
+  receive_sharing_intent: ^1.4.1
+  linkify: ^2.0.3
+  provider: ^4.3.2+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

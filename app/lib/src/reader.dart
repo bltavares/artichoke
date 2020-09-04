@@ -37,10 +37,7 @@ class _MarkdownViewState extends State<MarkdownView> {
   }
 
   void downloadContent() async {
-    final result = await compute(
-      (path) => Article.download(path),
-      this.widget.path,
-    );
+    final result = await compute(download, this.widget.path);
     setState(() {
       this.content = result.content;
     });
@@ -86,9 +83,10 @@ class ReaderScreen extends StatelessWidget {
                 }),
             floating: true,
             pinned: false,
-            snap: true,
+            snap: false,
           ),
           SliverFillRemaining(
+            hasScrollBody: true,
             child: MarkdownView(
               path: ModalRoute.of(context).settings.arguments,
             ),

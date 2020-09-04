@@ -46,11 +46,6 @@ class Article {
 
   Article({this.metadata, @required this.content});
 
-  factory Article.download(String path) {
-    final content = _ffiDownload(path);
-    return Article.parse(content);
-  }
-
   factory Article.parse(String content) {
     if (content == null) {
       return null;
@@ -70,4 +65,9 @@ class Article {
       content: content.substring(closeIndex + 4),
     );
   }
+}
+
+Article download(String path) {
+  final content = _ffiDownload(path);
+  return Article.parse(content);
 }
