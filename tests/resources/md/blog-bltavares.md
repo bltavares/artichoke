@@ -1,5 +1,6 @@
 +++
 title = 'Cluster em casa – Sistema operacional | Bruno Lara Tavares - Blog'
+word_count = 1722
 +++
 
 Depois de [escolhido o hardware](https://blog.bltavares.com/2019/05/12/cluster_em_casa_hardware/) para montar o cluster em casa, precisamos dar o primeiro passo para ligá-los, ou seja, precisamos de um sistema operacional.

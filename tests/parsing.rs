@@ -27,6 +27,7 @@ fn extracts_h_articles() {
                 author: None,
                 date: None,
                 title: Some("A Title".into()),
+                word_count: 11,
             }
         })
     );

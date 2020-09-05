@@ -1,6 +1,8 @@
 use clap::{App, Arg};
 
 fn main() {
+    env_logger::init();
+
     let matches = App::new("artichoke")
         .arg(Arg::with_name("path").required(true))
         .get_matches();

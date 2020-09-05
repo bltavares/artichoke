@@ -1,5 +1,6 @@
 +++
 title = 'Announcing Rust 1.46.0 | Rust Blog'
+word_count = 507
 +++
 
 The Rust team is happy to announce a new version of Rust, 1.46.0. Rust is a

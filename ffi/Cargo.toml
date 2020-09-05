@@ -12,3 +12,4 @@ libc = '0.2.76'
 
 [dependencies.artichoke]
 path = '..'
+default-features = false

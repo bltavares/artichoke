@@ -67,7 +67,33 @@ class Article {
   }
 }
 
-Article download(String path) {
-  final content = _ffiDownload(path);
+Future<Article> download(String path) async {
+  final content = await compute(_ffiDownload, path);
   return Article.parse(content);
+}
+
+final urlRegExp = RegExp(
+    r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?");
+
+final trimRight = RegExp('\\),?');
+
+class ExtractedLink {
+  final String url;
+
+  ExtractedLink(this.url);
+}
+
+List<ExtractedLink> extractLinks(String sharedText) {
+  if (sharedText == null || sharedText.isEmpty) {
+    return [];
+  }
+
+  return urlRegExp
+      .allMatches(sharedText)
+      .map((urlMatch) => sharedText
+          .substring(urlMatch.start, urlMatch.end)
+          .replaceFirst(trimRight, ''))
+      .toSet()
+      .map((x) => ExtractedLink(x))
+      .toList();
 }

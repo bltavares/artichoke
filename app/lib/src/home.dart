@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:linkify/linkify.dart';
 import 'package:provider/provider.dart';
+
+import 'multilinks.dart';
+import 'ffi.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -10,16 +12,25 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<List<LinkableElement>>(
+    return Consumer<List<ExtractedLink>>(
       builder: (context, value, child) {
-        if (value.length == 1) {
-          Future.microtask(
-            () => Navigator.of(context)
-                .pushNamed('/read', arguments: value.first.url),
-          );
-        }
         return Scaffold(
-          body: FindUrl(sharedContent: value.isEmpty ? null : value.first.url),
+          body: Builder(builder: (context) {
+            if (value.length == 1) {
+              Future.microtask(
+                () => Navigator.of(context)
+                    .pushNamed('/read', arguments: value.first.url),
+              );
+            }
+
+            if (value.length > 1) {
+              multilinkExtract(context, value);
+            }
+
+            return FindUrl(
+              sharedContent: value.isEmpty ? null : value.first.url,
+            );
+          }),
         );
       },
     );

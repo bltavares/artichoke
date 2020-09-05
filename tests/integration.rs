@@ -16,16 +16,17 @@ fn verify_template(resource: &str) {
     let markdown = Path::new(&markdown);
     let expected = fs::read_to_string(markdown).expect("failed to read expected file");
 
-    fs::write(
-        markdown,
-        artichoke::parse(&origin)
-            .map(artichoke::frontmatter)
-            .unwrap(),
-    );
-    // assert_eq!(
+    // fs::write(
+    //     markdown,
     //     artichoke::parse(&origin)
     //         .map(artichoke::frontmatter)
     //         .unwrap(),
-    //     expected
-    // );
+    // ).expect("failed to write new files");
+
+    assert_eq!(
+        artichoke::parse(&origin)
+            .map(artichoke::frontmatter)
+            .unwrap(),
+        expected
+    );
 }

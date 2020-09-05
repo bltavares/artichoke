@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:artichoke/src/reader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:linkify/linkify.dart';
 import 'package:provider/provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
+import 'ffi.dart';
 import 'home.dart';
 
 class ShareIntentReceiver extends StatefulWidget {
@@ -68,6 +68,40 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
   }
 }
 
+class ClipboardOnOpen extends StatefulWidget {
+  @override
+  _ClipboardOnOpenState createState() => _ClipboardOnOpenState();
+}
+
+class _ClipboardOnOpenState extends State<ClipboardOnOpen> {
+  String _sharedText;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFromClipboard();
+  }
+
+  void fetchFromClipboard() {
+    Clipboard.getData("text/plain").then((data) {
+      if (data == null) return;
+      if (data.text.startsWith("http://") || data.text.startsWith("https://")) {
+        setState(() {
+          _sharedText = data.text;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Provider.value(
+      value: SharedContent(_sharedText),
+      child: Application(),
+    );
+  }
+}
+
 class SharedContent {
   final String content;
   SharedContent(this.content);
@@ -78,23 +112,13 @@ class Application extends StatelessWidget {
     if (Platform.isAndroid) {
       return ShareIntentReceiver();
     }
-    return Application();
-  }
-
-  List<LinkableElement> initialLinks(String sharedText) {
-    if (sharedText == null || sharedText.isEmpty) {
-      return [];
-    }
-    return linkify(sharedText)
-        .where((element) => element is LinkableElement)
-        .cast<LinkableElement>()
-        .toList();
+    return ClipboardOnOpen();
   }
 
   @override
   Widget build(BuildContext context) {
     final initialText = context.watch<SharedContent>();
-    final links = initialLinks(initialText.content);
+    final links = extractLinks(initialText.content);
     return Provider.value(
       value: links,
       child: MaterialApp(
@@ -105,9 +129,10 @@ class Application extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         routes: {
+          '/': (context) => HomeScreen(),
           '/read': (context) => ReaderScreen(),
         },
-        home: HomeScreen(),
+        initialRoute: '/',
       ),
     );
   }
