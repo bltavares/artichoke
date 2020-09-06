@@ -110,7 +110,7 @@ pub fn fetch_info(path: &str) -> String {
     if path.starts_with("http://") || path.starts_with("https://") {
         ureq::get(path)
             .redirects(5)
-            .timeout(Duration::from_secs(5))
+            .timeout(Duration::from_secs(10))
             .call()
             .into_string()
             .expect("could not read http body")

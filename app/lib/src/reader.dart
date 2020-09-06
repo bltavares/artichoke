@@ -232,7 +232,7 @@ class ReaderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final url = ModalRoute.of(context).settings.arguments;
     return FutureBuilder(
-      future: download(url).timeout(Duration(seconds: 8)),
+      future: download(url).timeout(Duration(seconds: 10)),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return LoadingArticleView();
