@@ -22,7 +22,7 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
 
   String extractFromPocketShare(String url) {
     if (url != null && url.startsWith("https://getpocket.com/redirect?url=")) {
-      return Uri.decodeFull(url.substring(35)).toString();
+      return Uri.decodeFull(Uri.parse(url).queryParameters['url']).toString();
     }
     return url;
   }
