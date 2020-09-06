@@ -68,7 +68,7 @@ fn extract_hentry_content(entry: Node) -> Option<String> {
 
 fn extract_generic_article(document: &kuchiki::NodeRef) -> Option<String> {
     let mut entries = document
-        .select(".article-body, .page-body, .content, article, #post, main")
+        .select(".article-body, .page-body, .content, article, #post, main, .node")
         .ok()
         .unwrap();
     debug_extraction!("article", entries.next().map(render))
