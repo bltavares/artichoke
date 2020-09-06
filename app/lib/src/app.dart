@@ -31,13 +31,20 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
   void initState() {
     super.initState();
 
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
-        (value) => setState(() => _sharedText = extractFromPocketShare(value)));
+    _intentDataStreamSubscription =
+        ReceiveSharingIntent.getTextStream().listen((value) {
+      if (value == null || value == '') return;
+      setState(() => _sharedText = extractFromPocketShare(value));
+    });
 
-    ReceiveSharingIntent.getInitialText().then(
-        (value) => setState(() => _sharedText = extractFromPocketShare(value)));
+    ReceiveSharingIntent.getInitialText().then((value) {
+      if (value == null || value == '') return;
+      setState(() => _sharedText = extractFromPocketShare(value));
+    });
 
     WidgetsBinding.instance.addObserver(this);
+
+    fetchFromClipboard();
   }
 
   @override
@@ -50,12 +57,10 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
 
   void fetchFromClipboard() {
     Clipboard.getData("text/plain").then((data) {
-      if (data == null) return;
-      if (data.text.startsWith("http://") || data.text.startsWith("https://")) {
-        setState(() {
-          _sharedText = extractFromPocketShare(data.text);
-        });
-      }
+      if (data == null || data.text == '') return;
+      setState(() {
+        _sharedText = extractFromPocketShare(data.text);
+      });
     });
   }
 
@@ -91,12 +96,10 @@ class _ClipboardOnOpenState extends State<ClipboardOnOpen> {
 
   void fetchFromClipboard() {
     Clipboard.getData("text/plain").then((data) {
-      if (data == null) return;
-      if (data.text.startsWith("http://") || data.text.startsWith("https://")) {
-        setState(() {
-          _sharedText = data.text;
-        });
-      }
+      if (data == null || data.text == '') return;
+      setState(() {
+        _sharedText = data.text;
+      });
     });
   }
 
@@ -132,7 +135,9 @@ class Application extends StatelessWidget {
         title: 'Artichoke - Article Viewer',
         theme: ThemeData(
           brightness: Brightness.dark,
-          primarySwatch: Colors.purple,
+          accentColor: Colors.purple,
+          canvasColor: Colors.transparent,
+          appBarTheme: AppBarTheme(color: Colors.black),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         routes: {

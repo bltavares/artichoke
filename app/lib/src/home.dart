@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 import 'multilinks.dart';
 import 'ffi.dart';
@@ -15,6 +16,52 @@ class HomeScreen extends StatelessWidget {
     return Consumer<List<ExtractedLink>>(
       builder: (context, value, child) {
         return Scaffold(
+          appBar: AppBar(
+            actions: [
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'report') {
+                    url_launcher.launch(
+                        'https://docs.google.com/forms/d/e/1FAIpQLSdxzXRozr9qafH_P_FrhSv-ICaVJ3cAKmWpl51ShrYrq4aaJg/viewform');
+                    return;
+                  }
+                  if (value == 'about') {
+                    showAboutDialog(
+                        context: context,
+                        applicationIcon: Icon(Icons.article_outlined),
+                        children: [
+                          SelectableText(
+                            'Website',
+                            style:
+                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                            onTap: () {
+                              url_launcher.launch(
+                                  'https://github.com/bltavares/artichoke');
+                            },
+                          )
+                        ]);
+                    return;
+                  }
+                },
+                icon: Icon(Icons.menu),
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'report',
+                      child: Text('Report article view error'),
+                    ),
+                    PopupMenuItem(
+                      value: 'about',
+                      child: Text('About'),
+                    ),
+                  ];
+                },
+              ),
+            ],
+          ),
           body: Builder(builder: (context) {
             if (value.length == 1) {
               Future.microtask(

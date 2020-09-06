@@ -9,165 +9,163 @@ import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 import './ffi.dart';
 
-class MarkdownView extends StatefulWidget {
-  final String path;
+class ArticleView extends StatefulWidget {
+  const ArticleView({
+    Key key,
+    @required this.url,
+    @required this.article,
+  }) : super(key: key);
 
-  const MarkdownView({Key key, @required this.path}) : super(key: key);
+  final String url;
+  final Article article;
 
   @override
-  _MarkdownViewState createState() => _MarkdownViewState();
+  _ArticleViewState createState() => _ArticleViewState();
 }
 
-class _MarkdownViewState extends State<MarkdownView> {
-  Article content;
-  bool timedOut;
+class _ArticleViewState extends State<ArticleView> {
   ScrollController controller;
+  MarkdownStyleSheet styleSheet;
 
   @override
   void initState() {
     super.initState();
-    timedOut = false;
-    controller = ScrollController();
-    downloadContent();
-    timeoutScreen();
+    controller = new ScrollController();
   }
 
-  void timeoutScreen() {
-    Future.delayed(Duration(seconds: 8)).then((value) => {
-          if (this.content == null)
-            {
-              setState(() {
-                this.timedOut = true;
-              })
-            }
-        });
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    styleSheet = stylesheetTheme();
   }
 
-  void downloadContent() async {
-    final result = await download(this.widget.path);
-    setState(() {
-      this.content = result;
-    });
+  MarkdownStyleSheet stylesheetTheme() {
+    final theme = Theme.of(context);
+    final readTheme = theme.copyWith(
+      textTheme: theme.textTheme.apply(fontSizeFactor: 1.5),
+    );
+    return MarkdownStyleSheet.fromTheme(readTheme).copyWith(
+        blockquoteDecoration: BoxDecoration(
+      color: Colors.grey.shade900,
+      borderRadius: BorderRadius.circular(2.0),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (this.content != null) {
-      final theme = Theme.of(context);
-      final readTheme = theme.copyWith(
-        textTheme: theme.textTheme.apply(fontSizeFactor: 1.5),
-      );
-
-      return Scaffold(
-        body: CustomScrollView(
-          controller: controller,
-          slivers: [
-            SliverAppBar(
-              leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
+    return Scaffold(
+      body: CustomScrollView(
+        controller: controller,
+        slivers: [
+          SliverAppBar(
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.share),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Share.share(widget.url);
                   }),
-              actions: [
-                IconButton(
-                    icon: Icon(Icons.share),
-                    onPressed: () {
-                      Share.share(widget.path);
-                    }),
-                IconButton(
-                    icon: Icon(Icons.open_in_browser),
-                    onPressed: () {
-                      url_launcher.launch(widget.path);
-                    }),
-                IconButton(
-                    icon: Icon(Icons.book),
-                    onPressed: () async {
-                      final links = await compute(
-                        extractLinks,
-                        content.content,
-                      );
-                      multilinkExtract(context, links);
-                    })
-              ],
-              floating: true,
-              pinned: false,
-              snap: true,
-            ),
-            SliverToBoxAdapter(
-              child: Center(
-                child: Column(
-                  children: [
-                    Container(height: 12),
-                    Text(
-                      this.content.metadata['title'],
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headline3,
-                    ),
-                    Text(
-                      "${this.content.metadata['word_count']} words",
-                      style: theme.textTheme.subtitle2,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Theme(
-                data: readTheme,
-                child: Markdown(
-                  shrinkWrap: true,
-                  controller: controller,
-                  selectable: true,
-                  data: this.content.content,
-                  onTapLink: (link) {
-                    if (link.startsWith("https://") ||
-                        link.startsWith("http://")) {
-                      Navigator.of(context).pushReplacementNamed(
-                        '/read',
-                        arguments: link,
-                      );
-                    }
-                  },
-                  imageBuilder: (uri, title, alt) {
-                    return Center(
-                      child: Column(
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: uri.toString(),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    CircularProgressIndicator(
-                                        value: downloadProgress.progress),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                          if (title != null)
-                            Text(
-                              title,
-                              style: Theme.of(context).textTheme.subtitle2,
-                            ),
-                          if (alt != null)
-                            Text(
-                              alt,
-                              style: Theme.of(context).textTheme.caption,
-                            )
-                        ],
-                      ),
+              IconButton(
+                  icon: Icon(Icons.open_in_browser),
+                  onPressed: () {
+                    url_launcher.launch(widget.url);
+                  }),
+              IconButton(
+                  icon: Icon(Icons.book),
+                  onPressed: () async {
+                    final links = await compute(
+                      extractLinks,
+                      widget.article.content,
                     );
-                  },
-                  extensionSet: md.ExtensionSet.gitHubWeb,
-                ),
+                    multilinkExtract(context, links);
+                  })
+            ],
+            floating: true,
+            pinned: false,
+            snap: true,
+          ),
+          SliverToBoxAdapter(
+            child: Center(
+              child: Column(
+                children: [
+                  Container(height: 12),
+                  Text(
+                    this.widget.article.metadata['title'],
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  Text(
+                    "${this.widget.article.metadata['word_count']} words",
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                ],
               ),
-            )
-          ],
-        ),
-      );
-    }
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Markdown(
+              controller: controller,
+              shrinkWrap: true,
+              selectable: true,
+              styleSheet: styleSheet,
+              data: this.widget.article.content,
+              onTapLink: (link) {
+                if (link.startsWith("https://") || link.startsWith("http://")) {
+                  Navigator.of(context).pushReplacementNamed(
+                    '/read',
+                    arguments: link,
+                  );
+                }
+              },
+              imageBuilder: (uri, title, alt) {
+                if (!uri.hasScheme) {
+                  uri = Uri.parse("https:$uri");
+                }
+                return Center(
+                  child: Column(
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: uri.toString(),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                CircularProgressIndicator(
+                                    value: downloadProgress.progress),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                      if (title != null)
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                      if (alt != null)
+                        Text(
+                          alt,
+                          style: Theme.of(context).textTheme.caption,
+                        )
+                    ],
+                  ),
+                );
+              },
+              extensionSet: md.ExtensionSet.gitHubWeb,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
 
-    if (this.timedOut) {
-      return ArticleViewFailed(path: widget.path);
-    }
+class LoadingArticleView extends StatelessWidget {
+  const LoadingArticleView({
+    Key key,
+  }) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
     return Center(child: CircularProgressIndicator());
   }
 }
@@ -232,6 +230,23 @@ class ArticleViewFailed extends StatelessWidget {
 class ReaderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MarkdownView(path: ModalRoute.of(context).settings.arguments);
+    final url = ModalRoute.of(context).settings.arguments;
+    return FutureBuilder(
+      future: download(url).timeout(Duration(seconds: 8)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return LoadingArticleView();
+        }
+
+        if (snapshot.data == null || snapshot.hasError) {
+          return ArticleViewFailed(path: url);
+        }
+
+        return ArticleView(
+          url: url,
+          article: snapshot.data,
+        );
+      },
+    );
   }
 }
