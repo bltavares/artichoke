@@ -88,39 +88,67 @@ class _FindUrlState extends State<FindUrl> {
       padding: const EdgeInsets.all(24.0),
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            TextField(
-              controller: controller,
-              onSubmitted: submit,
-              decoration: InputDecoration(
-                hintText: "website",
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    controller.clear();
-                  },
-                  icon: Icon(Icons.clear),
+            Column(
+              children: [
+                Icon(Icons.article_outlined),
+                Container(height: 16),
+                Text(
+                  'Artichoke',
+                  style: Theme.of(context).textTheme.headline5,
                 ),
-              ),
-              onChanged: (input) {
-                setState(() {
-                  this.path = input;
-                });
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.singleLineFormatter,
+                Container(height: 8),
+                Text(
+                  'The article viewer',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
               ],
-              keyboardType: TextInputType.url,
-              textInputAction: TextInputAction.done,
-              textCapitalization: TextCapitalization.none,
             ),
-            OutlineButton.icon(
-              onPressed: () {
-                submit(null);
-              },
-              label: Text('Read'),
-              icon: Icon(Icons.chrome_reader_mode),
-            )
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: controller,
+                  onSubmitted: submit,
+                  decoration: InputDecoration(
+                    hintText: "website",
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        controller.clear();
+                      },
+                      icon: Icon(Icons.clear),
+                    ),
+                  ),
+                  onChanged: (input) {
+                    setState(() {
+                      this.path = input;
+                    });
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.singleLineFormatter,
+                  ],
+                  keyboardType: TextInputType.url,
+                  textInputAction: TextInputAction.done,
+                  textCapitalization: TextCapitalization.none,
+                ),
+                Container(height: 24),
+                OutlineButton.icon(
+                  onPressed: () {
+                    submit(null);
+                  },
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 35.0,
+                    vertical: 12,
+                  ),
+                  label: Text('Read article'),
+                  icon: Icon(Icons.chrome_reader_mode),
+                ),
+                Container(
+                  height: 24,
+                ),
+              ],
+            ),
           ],
         ),
       ),

@@ -20,15 +20,22 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
   String _sharedText;
   StreamSubscription _intentDataStreamSubscription;
 
+  String extractFromPocketShare(String url) {
+    if (url != null && url.startsWith("https://getpocket.com/redirect?url=")) {
+      return Uri.parse(url.substring(35)).toString();
+    }
+    return url;
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream()
-        .listen((value) => setState(() => _sharedText = value));
+    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
+        (value) => setState(() => _sharedText = extractFromPocketShare(value)));
 
-    ReceiveSharingIntent.getInitialText()
-        .then((value) => setState(() => _sharedText = value));
+    ReceiveSharingIntent.getInitialText().then(
+        (value) => setState(() => _sharedText = extractFromPocketShare(value)));
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -46,7 +53,7 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
       if (data == null) return;
       if (data.text.startsWith("http://") || data.text.startsWith("https://")) {
         setState(() {
-          _sharedText = data.text;
+          _sharedText = extractFromPocketShare(data.text);
         });
       }
     });

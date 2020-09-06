@@ -1,4 +1,5 @@
 import 'package:artichoke/src/multilinks.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -18,18 +19,21 @@ class MarkdownView extends StatefulWidget {
 }
 
 class _MarkdownViewState extends State<MarkdownView> {
-  String content;
-  bool timedOut = false;
+  Article content;
+  bool timedOut;
+  ScrollController controller;
 
   @override
   void initState() {
     super.initState();
+    timedOut = false;
+    controller = ScrollController();
     downloadContent();
     timeoutScreen();
   }
 
   void timeoutScreen() {
-    Future.delayed(Duration(seconds: 5)).then((value) => {
+    Future.delayed(Duration(seconds: 8)).then((value) => {
           if (this.content == null)
             {
               setState(() {
@@ -42,15 +46,21 @@ class _MarkdownViewState extends State<MarkdownView> {
   void downloadContent() async {
     final result = await download(this.widget.path);
     setState(() {
-      this.content = result?.content;
+      this.content = result;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     if (this.content != null) {
+      final theme = Theme.of(context);
+      final readTheme = theme.copyWith(
+        textTheme: theme.textTheme.apply(fontSizeFactor: 1.5),
+      );
+
       return Scaffold(
         body: CustomScrollView(
+          controller: controller,
           slivers: [
             SliverAppBar(
               leading: IconButton(
@@ -72,19 +82,43 @@ class _MarkdownViewState extends State<MarkdownView> {
                 IconButton(
                     icon: Icon(Icons.book),
                     onPressed: () async {
-                      final links = await compute(extractLinks, content);
+                      final links = await compute(
+                        extractLinks,
+                        content.content,
+                      );
                       multilinkExtract(context, links);
                     })
               ],
               floating: true,
               pinned: false,
-              snap: false,
+              snap: true,
             ),
-            SliverFillRemaining(
-                hasScrollBody: true,
+            SliverToBoxAdapter(
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(height: 12),
+                    Text(
+                      this.content.metadata['title'],
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headline3,
+                    ),
+                    Text(
+                      "${this.content.metadata['word_count']} words",
+                      style: theme.textTheme.subtitle2,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Theme(
+                data: readTheme,
                 child: Markdown(
+                  shrinkWrap: true,
+                  controller: controller,
                   selectable: true,
-                  data: this.content,
+                  data: this.content.content,
                   onTapLink: (link) {
                     if (link.startsWith("https://") ||
                         link.startsWith("http://")) {
@@ -94,8 +128,37 @@ class _MarkdownViewState extends State<MarkdownView> {
                       );
                     }
                   },
+                  imageBuilder: (uri, title, alt) {
+                    return Center(
+                      child: Column(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: uri.toString(),
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                          if (title != null)
+                            Text(
+                              title,
+                              style: Theme.of(context).textTheme.subtitle2,
+                            ),
+                          if (alt != null)
+                            Text(
+                              alt,
+                              style: Theme.of(context).textTheme.caption,
+                            )
+                        ],
+                      ),
+                    );
+                  },
                   extensionSet: md.ExtensionSet.gitHubWeb,
-                ))
+                ),
+              ),
+            )
           ],
         ),
       );
@@ -151,7 +214,15 @@ class ArticleViewFailed extends StatelessWidget {
                 url_launcher.launch(
                     'https://docs.google.com/forms/d/e/1FAIpQLSdxzXRozr9qafH_P_FrhSv-ICaVJ3cAKmWpl51ShrYrq4aaJg/viewform?entry.211949886=${this.path}');
               },
-              child: Text('Report article'))
+              child: Text('Report article view')),
+          OutlineButton(
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed(
+                  '/read',
+                  arguments: this.path,
+                );
+              },
+              child: Text('Retry'))
         ],
       )),
     );
