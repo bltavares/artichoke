@@ -11,9 +11,9 @@ import './ffi.dart';
 
 class ArticleView extends StatefulWidget {
   const ArticleView({
-    Key key,
-    @required this.url,
-    @required this.article,
+    Key? key,
+    required this.url,
+    required this.article,
   }) : super(key: key);
 
   final String url;
@@ -24,8 +24,8 @@ class ArticleView extends StatefulWidget {
 }
 
 class _ArticleViewState extends State<ArticleView> {
-  ScrollController controller;
-  MarkdownStyleSheet styleSheet;
+  late final ScrollController controller;
+  late MarkdownStyleSheet styleSheet;
 
   @override
   void initState() {
@@ -113,8 +113,9 @@ class _ArticleViewState extends State<ArticleView> {
               selectable: true,
               styleSheet: styleSheet,
               data: this.widget.article.content,
-              onTapLink: (link) {
-                if (link.startsWith("https://") || link.startsWith("http://")) {
+              onTapLink: (text, link, title) {
+                if (link!.startsWith("https://") ||
+                    link.startsWith("http://")) {
                   Navigator.of(context).pushReplacementNamed(
                     '/read',
                     arguments: link,
@@ -161,7 +162,7 @@ class _ArticleViewState extends State<ArticleView> {
 
 class LoadingArticleView extends StatelessWidget {
   const LoadingArticleView({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -172,11 +173,11 @@ class LoadingArticleView extends StatelessWidget {
 
 class ArticleViewFailed extends StatelessWidget {
   const ArticleViewFailed({
-    Key key,
-    @required this.path,
+    Key? key,
+    required this.path,
   }) : super(key: key);
 
-  final String path;
+  final String? path;
 
   @override
   Widget build(BuildContext context) {
@@ -198,22 +199,22 @@ class ArticleViewFailed extends StatelessWidget {
           Text('Failed to load article view'),
           Container(height: 24.0),
           SelectableText(
-            this.path,
+            this.path!,
             textAlign: TextAlign.center,
           ),
           Container(height: 24.0),
-          OutlineButton(
+          OutlinedButton(
               onPressed: () {
-                url_launcher.launch(this.path);
+                url_launcher.launch(this.path!);
               },
               child: Text('Open in browser')),
-          OutlineButton(
+          OutlinedButton(
               onPressed: () {
                 url_launcher.launch(
                     'https://docs.google.com/forms/d/e/1FAIpQLSdxzXRozr9qafH_P_FrhSv-ICaVJ3cAKmWpl51ShrYrq4aaJg/viewform?entry.211949886=${this.path}');
               },
               child: Text('Report article view')),
-          OutlineButton(
+          OutlinedButton(
               onPressed: () {
                 Navigator.of(context).popAndPushNamed(
                   '/read',
@@ -230,7 +231,7 @@ class ArticleViewFailed extends StatelessWidget {
 class ReaderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final url = ModalRoute.of(context).settings.arguments;
+    final url = ModalRoute.of(context)!.settings.arguments as String;
     return FutureBuilder(
       future: download(url).timeout(Duration(seconds: 10)),
       builder: (context, snapshot) {
@@ -244,7 +245,7 @@ class ReaderScreen extends StatelessWidget {
 
         return ArticleView(
           url: url,
-          article: snapshot.data,
+          article: snapshot.data as Article,
         );
       },
     );

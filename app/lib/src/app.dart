@@ -15,14 +15,13 @@ class ShareIntentReceiver extends StatefulWidget {
   _ShareIntentReceiverState createState() => _ShareIntentReceiverState();
 }
 
-class _ShareIntentReceiverState extends State<ShareIntentReceiver>
-    with WidgetsBindingObserver {
-  String _sharedText;
-  StreamSubscription _intentDataStreamSubscription;
+class _ShareIntentReceiverState extends State<ShareIntentReceiver> {
+  String? _sharedText;
+  late StreamSubscription _intentDataStreamSubscription;
 
-  String extractFromPocketShare(String url) {
+  String? extractFromPocketShare(String? url) {
     if (url != null && url.startsWith("https://getpocket.com/redirect?url=")) {
-      return Uri.decodeFull(Uri.parse(url).queryParameters['url']).toString();
+      return Uri.decodeFull(Uri.parse(url).queryParameters['url']!).toString();
     }
     return url;
   }
@@ -31,28 +30,17 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
   void initState() {
     super.initState();
 
-    _intentDataStreamSubscription =
-        ReceiveSharingIntent.getTextStream().listen((value) {
-      if (value == null || value == '') return;
-      setState(() => _sharedText = extractFromPocketShare(value));
-    });
+    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
+      (value) {
+        if (value == '') return;
+        setState(() => _sharedText = extractFromPocketShare(value));
+      },
+    );
 
     ReceiveSharingIntent.getInitialText().then((value) {
       if (value == null || value == '') return;
       setState(() => _sharedText = extractFromPocketShare(value));
     });
-
-    WidgetsBinding.instance.addObserver(this);
-
-    fetchFromClipboard();
-  }
-
-  @override
-  didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      fetchFromClipboard();
-    }
   }
 
   void fetchFromClipboard() {
@@ -67,7 +55,6 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
   @override
   void dispose() {
     _intentDataStreamSubscription.cancel();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -80,40 +67,8 @@ class _ShareIntentReceiverState extends State<ShareIntentReceiver>
   }
 }
 
-class ClipboardOnOpen extends StatefulWidget {
-  @override
-  _ClipboardOnOpenState createState() => _ClipboardOnOpenState();
-}
-
-class _ClipboardOnOpenState extends State<ClipboardOnOpen> {
-  String _sharedText;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchFromClipboard();
-  }
-
-  void fetchFromClipboard() {
-    Clipboard.getData("text/plain").then((data) {
-      if (data == null || data.text == '') return;
-      setState(() {
-        _sharedText = data.text;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Provider.value(
-      value: SharedContent(_sharedText),
-      child: Application(),
-    );
-  }
-}
-
 class SharedContent {
-  final String content;
+  final String? content;
   SharedContent(this.content);
 }
 
@@ -122,7 +77,10 @@ class Application extends StatelessWidget {
     if (Platform.isAndroid) {
       return ShareIntentReceiver();
     }
-    return ClipboardOnOpen();
+    return Provider.value(
+      value: SharedContent(null),
+      child: Application(),
+    );
   }
 
   @override
@@ -133,9 +91,9 @@ class Application extends StatelessWidget {
       value: links,
       child: MaterialApp(
         title: 'Artichoke - Article Viewer',
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          accentColor: Colors.purple,
+        theme: ThemeData.from(
+          colorScheme: ColorScheme.dark().copyWith(secondary: Colors.purple),
+        ).copyWith(
           canvasColor: Colors.transparent,
           appBarTheme: AppBarTheme(color: Colors.black),
           visualDensity: VisualDensity.adaptivePlatformDensity,

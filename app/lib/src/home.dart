@@ -8,7 +8,7 @@ import 'ffi.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                           SelectableText(
                             'Website',
                             style:
-                                Theme.of(context).textTheme.bodyText1.copyWith(
+                                Theme.of(context).textTheme.bodyText1!.copyWith(
                                       color: Colors.blue,
                                       decoration: TextDecoration.underline,
                                     ),
@@ -85,11 +85,11 @@ class HomeScreen extends StatelessWidget {
 }
 
 class FindUrl extends StatefulWidget {
-  final String sharedContent;
+  final String? sharedContent;
 
   const FindUrl({
-    Key key,
-    @required this.sharedContent,
+    Key? key,
+    required this.sharedContent,
   }) : super(key: key);
 
   @override
@@ -97,7 +97,7 @@ class FindUrl extends StatefulWidget {
 }
 
 class _FindUrlState extends State<FindUrl> {
-  String path;
+  late String path;
   TextEditingController controller = TextEditingController();
 
   _FindUrlState();
@@ -111,15 +111,12 @@ class _FindUrlState extends State<FindUrl> {
   @override
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
-    controller.text = widget.sharedContent;
-    path = widget.sharedContent;
+    controller.text = widget.sharedContent!;
+    path = widget.sharedContent!;
   }
 
-  void submit(String input) {
+  void submit(String? input) {
     final data = input ?? this.path;
-    if (data == null) {
-      return;
-    }
     final url = Uri.parse(data);
     if (url.scheme == "http" || url.scheme == "https") {
       Navigator.of(context).pushNamed(
@@ -180,14 +177,10 @@ class _FindUrlState extends State<FindUrl> {
                   textCapitalization: TextCapitalization.none,
                 ),
                 Container(height: 24),
-                OutlineButton.icon(
+                OutlinedButton.icon(
                   onPressed: () {
                     submit(null);
                   },
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 35.0,
-                    vertical: 12,
-                  ),
                   label: Text('Read article'),
                   icon: Icon(Icons.chrome_reader_mode),
                 ),

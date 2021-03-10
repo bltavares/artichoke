@@ -3,7 +3,7 @@ import 'dart:io'; // For Platform.isX
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:ffi/ffi.dart';
-import 'package:toml/decoder.dart';
+import 'package:toml/toml.dart';
 
 ffi.DynamicLibrary _loadLib() {
   if (Platform.isIOS) return ffi.DynamicLibrary.process();
@@ -29,13 +29,13 @@ final _artichokeFreeString = _artichokeLib.lookupFunction<
     ffi.Void Function(ffi.Pointer<Utf8>),
     void Function(ffi.Pointer<Utf8>)>('artichoke_free_string');
 
-String _ffiDownload(String path) {
-  final donwloadPath = Utf8.toUtf8(path);
+String? _ffiDownload(String path) {
+  final donwloadPath = path.toNativeUtf8();
   final content = _artichokeDonwload(donwloadPath);
   if (content == ffi.nullptr) {
     return null;
   }
-  final r = Utf8.fromUtf8(content);
+  final r = content.toDartString();
   _artichokeFreeString(content);
   return r;
 }
@@ -44,21 +44,16 @@ class Article {
   final Map<String, dynamic> metadata;
   final String content;
 
-  Article({this.metadata, @required this.content});
+  Article({required this.metadata, required this.content});
 
   factory Article.parse(String content) {
-    if (content == null) {
-      return null;
-    }
-
     if (!content.startsWith('+++')) {
-      return Article(content: content, metadata: null);
+      return Article(content: content, metadata: Map());
     }
 
     final closeIndex = content.indexOf('\n+++');
     final metadata = content.substring(3, closeIndex);
-    final parser = new TomlParser();
-    final parsed = parser.parse(metadata).value;
+    final parsed = TomlDocument.parse(metadata).toMap();
 
     return Article(
       metadata: parsed,
@@ -69,7 +64,7 @@ class Article {
 
 Future<Article> download(String path) async {
   final content = await compute(_ffiDownload, path);
-  return Article.parse(content);
+  return Article.parse(content ?? "");
 }
 
 final urlRegExp = RegExp(
@@ -83,7 +78,7 @@ class ExtractedLink {
   ExtractedLink(this.url);
 }
 
-List<ExtractedLink> extractLinks(String sharedText) {
+List<ExtractedLink> extractLinks(String? sharedText) {
   if (sharedText == null || sharedText.isEmpty) {
     return [];
   }

@@ -19,8 +19,8 @@ class MultiLinkView extends StatelessWidget {
   final List<ExtractedLink> links;
 
   const MultiLinkView({
-    Key key,
-    @required this.links,
+    Key? key,
+    required this.links,
   }) : super(key: key);
 
   @override
