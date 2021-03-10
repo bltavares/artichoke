@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(artichoke LANGUAGES CXX)
+project(app LANGUAGES CXX)
 
-set(BINARY_NAME "artichoke")
+set(BINARY_NAME "app")
 
 cmake_policy(SET CMP0063 NEW)
 
