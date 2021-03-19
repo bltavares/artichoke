@@ -26,6 +26,7 @@ class ArticleView extends StatefulWidget {
 class _ArticleViewState extends State<ArticleView> {
   late final ScrollController controller;
   late MarkdownStyleSheet styleSheet;
+  bool extractingLinks = false;
 
   @override
   void initState() {
@@ -45,18 +46,18 @@ class _ArticleViewState extends State<ArticleView> {
       textTheme: theme.textTheme
           .copyWith(
             bodyText2: theme.textTheme.bodyText2!.copyWith(height: 1.8),
-            bodyText1: theme.textTheme.bodyText1!.copyWith(height: 2.5),
-            headline6: theme.textTheme.headline6!.copyWith(height: 2.5),
-            headline5: theme.textTheme.headline5!.copyWith(height: 2.5),
-            subtitle1: theme.textTheme.subtitle1!.copyWith(height: 2.5),
+            bodyText1: theme.textTheme.bodyText1!.copyWith(height: 1.8),
+            headline6: theme.textTheme.headline6!.copyWith(height: 1.3),
+            headline5: theme.textTheme.headline5!.copyWith(height: 1.3),
+            subtitle1: theme.textTheme.subtitle1!.copyWith(height: 1.3),
           )
           .apply(
-            fontSizeFactor: 1.5,
+            fontSizeFactor: 1.3,
             fontFamily: "Merriweather",
           ),
     );
     return MarkdownStyleSheet.fromTheme(readTheme).copyWith(
-      blockSpacing: 16.0,
+      blockSpacing: 20.0,
       blockquoteDecoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(2.0),
@@ -88,12 +89,25 @@ class _ArticleViewState extends State<ArticleView> {
                     url_launcher.launch(widget.url);
                   }),
               IconButton(
-                  icon: Icon(Icons.book),
+                  icon: extractingLinks
+                      ? Icon(Icons.access_alarm)
+                      : Icon(Icons.book),
                   onPressed: () async {
+                    if (extractingLinks) {
+                      return;
+                    }
+
+                    setState(() {
+                      extractingLinks = true;
+                    });
                     final links = await compute(
                       extractLinks,
                       widget.article.content,
                     );
+                    setState(() {
+                      extractingLinks = false;
+                    });
+
                     multilinkExtract(context, links);
                   })
             ],
@@ -109,7 +123,10 @@ class _ArticleViewState extends State<ArticleView> {
                   Text(
                     this.widget.article.metadata['title'],
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
+                          fontSize:
+                              Theme.of(context).textTheme.headline5!.fontSize,
+                        ),
                   ),
                   Text(
                     "${this.widget.article.metadata['word_count']} words",
