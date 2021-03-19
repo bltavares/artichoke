@@ -62,9 +62,12 @@ class Article {
   }
 }
 
-Future<Article> download(String path) async {
+Future<Article?> download(String path) async {
   final content = await compute(_ffiDownload, path);
-  return Article.parse(content ?? "");
+  if (content == null) {
+    return null;
+  }
+  return Article.parse(content);
 }
 
 final urlRegExp = RegExp(
