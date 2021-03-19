@@ -42,13 +42,26 @@ class _ArticleViewState extends State<ArticleView> {
   MarkdownStyleSheet stylesheetTheme() {
     final theme = Theme.of(context);
     final readTheme = theme.copyWith(
-      textTheme: theme.textTheme.apply(fontSizeFactor: 1.5),
+      textTheme: theme.textTheme
+          .copyWith(
+            bodyText2: theme.textTheme.bodyText2!.copyWith(height: 1.8),
+            bodyText1: theme.textTheme.bodyText1!.copyWith(height: 2.5),
+            headline6: theme.textTheme.headline6!.copyWith(height: 2.5),
+            headline5: theme.textTheme.headline5!.copyWith(height: 2.5),
+            subtitle1: theme.textTheme.subtitle1!.copyWith(height: 2.5),
+          )
+          .apply(
+            fontSizeFactor: 1.5,
+            fontFamily: "Merriweather",
+          ),
     );
     return MarkdownStyleSheet.fromTheme(readTheme).copyWith(
-        blockquoteDecoration: BoxDecoration(
-      color: Colors.grey.shade900,
-      borderRadius: BorderRadius.circular(2.0),
-    ));
+      blockSpacing: 16.0,
+      blockquoteDecoration: BoxDecoration(
+        color: Colors.grey.shade900,
+        borderRadius: BorderRadius.circular(2.0),
+      ),
+    );
   }
 
   @override

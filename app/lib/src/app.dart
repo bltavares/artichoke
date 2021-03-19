@@ -94,7 +94,8 @@ class Application extends StatelessWidget {
         theme: ThemeData.from(
           colorScheme: ColorScheme.dark().copyWith(secondary: Colors.purple),
         ).copyWith(
-          canvasColor: Colors.transparent,
+          canvasColor: Colors.black,
+          scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(color: Colors.black),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
